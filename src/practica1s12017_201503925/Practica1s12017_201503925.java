@@ -5,6 +5,8 @@
  */
 package practica1s12017_201503925;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author Sergio
@@ -16,18 +18,11 @@ public class Practica1s12017_201503925 {
      */
     public static void main(String[] args) {
         
-        ListaSimple lista= new ListaSimple();
+        Inicio ini= new Inicio();
+        ini.setVisible(true);
+        ini.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        lista.insertarFinal("Hola");
-        lista.insertarFinal("Maribel");
-        lista.insertarFinal("Peluchote :3");
-        lista.insertarFinal(14);
-        lista.insertarFinal("de Febrero");
-        lista.insertarInicio(":*");
-        lista.insertarInicio("Quiero Alitas");
-        
-        lista.imprimir();
-        System.out.println("Tamaño de la lista "+lista.getSize());
+
     }
     
 }
