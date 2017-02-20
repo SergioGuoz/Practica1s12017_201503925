@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package practica1s12017_201503925;
 
+import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -22,9 +19,6 @@ import java.util.List;
 public class Inicio extends javax.swing.JFrame {
 
     
-    /**
-     * Creates new form Inicio
-     */
     public Inicio() {
         initComponents();
     }
@@ -52,6 +46,16 @@ public class Inicio extends javax.swing.JFrame {
         });
 
         jButton2.setText("Jugar");
+        jButton2.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jButton2ComponentShown(evt);
+            }
+        });
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -87,8 +91,31 @@ public class Inicio extends javax.swing.JFrame {
                     }
             
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+          this.dispose();
+          Jugadores j= new Jugadores(sizeArreglo, diccionario, posx, posy, val);
+          j.setLocationRelativeTo(null);
+          j.setVisible(true);
+        
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton2ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButton2ComponentShown
+        this.dispose();
+        AgregarJugador jug= new AgregarJugador();
+        jug.setVisible(true);
+        
+        jug.setLayout(new FlowLayout());
+    }//GEN-LAST:event_jButton2ComponentShown
+
+    
 ListaSimple diccionario=new ListaSimple();
+ListaSimple posx=new ListaSimple();
+ListaSimple posy=new ListaSimple();
+ListaSimple val=new ListaSimple();
 int sizeArreglo;
+
     public void cargarXML(File archivo){
         try {
             SAXBuilder builder= new SAXBuilder();
@@ -101,12 +128,29 @@ int sizeArreglo;
             List list3= raiz.getChildren("triples");
             
             sizeArreglo=Integer.parseInt(raiz.getChildText("dimension"));
+            
             for (int i = 0; i < list2.size(); i++) {
                 Element datos=(Element)list2.get(i);
                 List aux= datos.getChildren("casilla");
                 
+                for (int j = 0; j < aux.size(); j++) {
+                    Element d=(Element)aux.get(j);
+                        posx.insertarFinal(d.getChildTextTrim("x"));
+                        posy.insertarFinal(d.getChildTextTrim("y"));
+                        val.insertarFinal(2);
+                }
             }
-            
+            for (int i = 0; i < list3.size(); i++) {
+                Element datos=(Element)list3.get(i);
+                List aux= datos.getChildren("casilla");
+                
+                for (int j = 0; j < aux.size(); j++) {
+                    Element d=(Element)aux.get(j);
+                        posx.insertarFinal(d.getChildTextTrim("x"));
+                        posy.insertarFinal(d.getChildTextTrim("y"));
+                        val.insertarFinal(3);
+                }
+            }
             
             for (int i = 0; i < list.size(); i++) {
                 Element datos =(Element)list.get(i);
@@ -120,7 +164,9 @@ int sizeArreglo;
             
             System.out.println("tam "+sizeArreglo);
             diccionario.imprimir();
-            
+            posx.imprimir();
+            posy.imprimir();
+            val.imprimir();
         } catch (JDOMException ex) {
             Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -129,40 +175,7 @@ int sizeArreglo;
         
     
     }
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Inicio().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

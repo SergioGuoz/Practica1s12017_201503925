@@ -27,6 +27,13 @@ public class ListaSimple {
             last=last.next=new Nodo(Dato);
         }
     }
+    public void insertarFinal(Object Dato,Object dato2){
+         if(first==null){
+            first=last=new Nodo(Dato, dato2);
+        }else{
+            last=last.next=new Nodo(Dato,dato2);
+        }
+    }
     public void imprimir(){
         Nodo temporal= first;
         if(first!=null){
