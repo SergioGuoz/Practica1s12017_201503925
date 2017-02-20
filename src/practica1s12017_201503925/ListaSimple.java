@@ -6,8 +6,23 @@ package practica1s12017_201503925;
  * @author Sergio
  */
 public class ListaSimple {
+
+    /**
+     * @return the archivoDot
+     */
+    public String getArchivoDot() {
+        return archivoDot;
+    }
+
+    /**
+     * @param archivoDot the archivoDot to set
+     */
+    public void setArchivoDot(String archivoDot) {
+        this.archivoDot = archivoDot;
+    }
     
     Nodo first,last;
+    private String archivoDot="Digraph grafo{\n";
     
     public ListaSimple(){
         first=last=null;
@@ -35,12 +50,17 @@ public class ListaSimple {
         }
     }
     public void imprimir(){
+        archivoDot="digraph grafo{\n";
         Nodo temporal= first;
         if(first!=null){
             while(temporal!=null){
+                if(temporal.getNext()!=null){
+                    archivoDot=archivoDot + "" + temporal.getDato() + "->" + temporal.getNext().getDato() + "; \n";
+                }
                 System.out.println(temporal.getDato());
                 temporal=temporal.getNext();
-            } 
+            }
+            archivoDot=archivoDot + "}";
         }
     }
     
@@ -57,15 +77,12 @@ public class ListaSimple {
     public Object Obtener(int index){
             int contador=0; 
         Nodo temporal = first;
-        if(index-1>0){
-            while(contador<index-1){
-                if(temporal.getNext()!=null){          
-                temporal=temporal.getNext();                
-                }contador++;             
-            }
+            while(contador < index && temporal.getNext()!=null){
+                temporal=temporal.getNext();
+                contador++;
             }
         return temporal.getDato();
         }
-    
-    
+        
+        
 }

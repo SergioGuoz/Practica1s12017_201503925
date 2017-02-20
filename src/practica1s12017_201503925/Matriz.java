@@ -9,13 +9,15 @@ public class Matriz {
     
     NodoMatriz first,last;
     int dimx=0, dimy=0;
+    String archivo="Digraph{";
     public Matriz(){
         first=last=null;
         
     }
     
     public void crearMatriz(int dimx, int dimy){
-       
+        this.dimx=dimx;
+        this.dimy=dimy;
             
             NodoMatriz nuevo,actual;
             
