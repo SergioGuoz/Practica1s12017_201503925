@@ -12,6 +12,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;    
 import org.jdom2.input.SAXBuilder;
 import java.util.List;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Sergio
@@ -88,6 +89,8 @@ public class Inicio extends javax.swing.JFrame {
                 if(seleccionado==JFileChooser.APPROVE_OPTION){
                     File archivo=seleccion.getSelectedFile();
                         cargarXML(archivo);
+                        
+                        JOptionPane.showMessageDialog(null, "Archivo Cargado");
                     }
             
     }//GEN-LAST:event_jButton1ActionPerformed

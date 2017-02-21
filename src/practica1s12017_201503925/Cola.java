@@ -7,7 +7,7 @@ package practica1s12017_201503925;
  */
 public class Cola {
     Nodo first,last;
-    
+    private String archivoDot="";
     public Cola(){
         first=last=null;
     }    
@@ -29,13 +29,31 @@ public class Cola {
     }
     
     public int getSize(){
-        int tamanio = 0;
+        int tamanio = 0; archivoDot="digraph grafo{ \n"; 
         Nodo temporal=first;
             while(temporal!=null){
+                if(temporal.getNext()!=null){
+                    archivoDot=archivoDot+temporal.getDato()+tamanio+"->"+temporal.getNext().getDato()+(tamanio+1)+";\n";
+                }
                 temporal=temporal.getNext();
                 tamanio++;
-            }       
+            }
+            archivoDot=archivoDot+" }";
         return tamanio;
+    }
+
+    /**
+     * @return the archivoDot
+     */
+    public String getArchivoDot() {
+        return archivoDot;
+    }
+
+    /**
+     * @param archivoDot the archivoDot to set
+     */
+    public void setArchivoDot(String archivoDot) {
+        this.archivoDot = archivoDot;
     }
         
 }

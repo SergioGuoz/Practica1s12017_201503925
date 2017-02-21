@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -63,7 +64,7 @@ public class Juego extends javax.swing.JFrame {
             for (int j = 0; j < matriz; j++) {
                 JTextField txtfield= new JTextField();
                 txtfield.setText("    ");
-                m.insertar(txtfield, i, j);
+                m.insertarT(txtfield, i, j);
                 jPanel1.add(txtfield);
             }
         }
@@ -98,6 +99,9 @@ public class Juego extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         tableroMatriz = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
+        fichasActivas = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        diccionarioHTML = new javax.swing.JTextPane();
         jLabel3 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -106,7 +110,8 @@ public class Juego extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextField1.setEditable(false);
+        jTextField1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField1.setDragEnabled(true);
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,22 +119,28 @@ public class Juego extends javax.swing.JFrame {
             }
         });
 
-        jTextField2.setEditable(false);
+        jTextField2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField2.setDragEnabled(true);
 
-        jTextField3.setEditable(false);
+        jTextField3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField3.setDragEnabled(true);
 
-        jTextField4.setEditable(false);
+        jTextField4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField4.setDragEnabled(true);
 
-        jTextField5.setEditable(false);
+        jTextField5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField5.setDragEnabled(true);
 
-        jTextField6.setEditable(false);
+        jTextField6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField6.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField6.setDragEnabled(true);
 
-        jTextField7.setEditable(false);
+        jTextField7.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField7.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField7.setDragEnabled(true);
 
         jPanel1.setBackground(new java.awt.Color(172, 31, 31));
@@ -176,7 +187,14 @@ public class Juego extends javax.swing.JFrame {
         jScrollPane4.setViewportView(tableroMatriz);
 
         jTabbedPane1.addTab("Matriz Tablero", jScrollPane4);
+
+        jScrollPane5.setViewportView(fichasActivas);
+
         jTabbedPane1.addTab("Lista Fichas Activas", jScrollPane5);
+
+        jScrollPane6.setViewportView(diccionarioHTML);
+
+        jTabbedPane1.addTab("Reporte", jScrollPane6);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 102, 255));
@@ -304,26 +322,108 @@ public class Juego extends javax.swing.JFrame {
         jTextField5.setText(jugfichas.getListaSimpe(global).Obtener(4)+"");
         jTextField6.setText(jugfichas.getListaSimpe(global).Obtener(5)+"");
         jTextField7.setText(jugfichas.getListaSimpe(global).Obtener(6)+"");
+        
+        //imagenDiccionario();
+        //jugfichas.getListaSimpe(global).imprimir();
+        //imagenfichasAc(jugfichas.getDato(global)+"",jugfichas.getListaSimpe(global).getArchivoDot());
+        //imagenJugadores();
+        //imagenCola();
+        //archivoMatriz();
         //global++;
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
+        System.out.println("Seleccionaste "+evt.getActionCommand());
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-            Jugar();
+        //Acepta la Palabra
+        palabraAceptada();
+        //Crea Archivo Dot de la Matriz
+        m.archivoDot();
+        //Juego
+        Jugar();
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    public void palabraAceptada(){
+        String fila="",columna="";
+        JTextField aux;
+        //PALABRA HORIZONTAL
+        for (int i = 0; i < matriz; i++) {
+            for (int j = 0; j < matriz; j++) {
+                aux=(JTextField)m.obtenerJ(i, j);
+                fila=fila+aux.getText(); System.out.println("FILA: "+aux.getText());
+                fila=fila.replace(" ", "");
+                if(matriz-1==j){
+                    for (int k = 0; k < diccionario.getSize(); k++) {
+                        if(diccionario.Obtener(k).toString().equalsIgnoreCase(fila)){
+                            JOptionPane.showMessageDialog(null, "Palabra Coincide con diccionario");
+                            fila="";
+                        }
+                    }
+                }
+                
+                }
+                
+            }
+        //PALABRA VERTICAL
+        for (int i = 0; i < matriz; i++) {
+            for (int j = 0; j < matriz; j++) {
+                aux=(JTextField)m.obtenerJ(j, i);
+                columna=columna+aux.getText();
+                if(matriz==j-1){
+                    for (int k = 0; k < diccionario.getSize(); k++) {
+                        if(diccionario.Obtener(k).toString().equalsIgnoreCase(fila)){
+                            //JOptionPane.showMessageDialog(null, "Palabra Coincide con diccionario");
+                            
+                        }
+                    }
+                }
+                
+                }
+                
+            }        
+        
+        
+        if(jTextField1.getText().isEmpty()){
+            
+        }if(jTextField2.getText().isEmpty()){
+            
+        }if(jTextField3.getText().isEmpty()){
+            
+        }if(jTextField4.getText().isEmpty()){
+            
+        }if(jTextField5.getText().isEmpty()){
+            
+        }if(jTextField6.getText().isEmpty()){
+            
+        }if(jTextField7.getText().isEmpty()){
+            
+        }
+        
+        
+        
+        
+    
+    }
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
+        
         diccionario.insertarFinal(nuevaPalabra.getText()+"");
         diccionario.imprimir();
+        try {
+            diccionarioHTML.setPage(getClass().getResource("\\reporteDiccionario.html"));
+        } catch (IOException ex) {
+            Logger.getLogger(Juego.class.getName()).log(Level.SEVERE, null, ex);
+        }
         imagenDiccionario();
         
     }//GEN-LAST:event_jButton3ActionPerformed
     public void Jugar(){
+        
+        global++;
+        //FICHAS
         
         name.setText(jugfichas.getDato(global)+"");
         jTextField1.setText(jugfichas.getListaSimpe(global).Obtener(0)+"");
@@ -334,14 +434,79 @@ public class Juego extends javax.swing.JFrame {
         jTextField6.setText(jugfichas.getListaSimpe(global).Obtener(5)+"");
         jTextField7.setText(jugfichas.getListaSimpe(global).Obtener(6)+"");
         
+        //CREACION DE REPORTES
         imagenDiccionario();
         jugfichas.getListaSimpe(global).imprimir();
-        imagenJugadores(jugfichas.getDato(global)+"",jugfichas.getListaSimpe(global).getArchivoDot());
-
-        global++;
+        imagenfichasAc(jugfichas.getDato(global)+"",jugfichas.getListaSimpe(global).getArchivoDot());
+        imagenJugadores();
+        imagenCola();
+        archivoMatriz();
+        //Siguiente Jugador
+        
     }
-    
-    public void imagenJugadores(String nombreJug,String contenido){
+    public void archivoMatriz(){
+        JTextField txtfield= new JTextField();
+        JTextField txtfield2= new JTextField();
+        JTextField txtfield3= new JTextField();
+        JTextField txtfield4= new JTextField();
+        
+        
+        String dot= "digraph grafo{ \n";
+        for (int i = 0; i < matriz; i++) {
+            for (int j = 0; j < matriz-1; j++) {
+                txtfield=(JTextField)m.obtenerJ(i, j);
+                txtfield2=(JTextField)m.obtenerJ(i, j+1);
+                txtfield3=(JTextField)m.obtenerJ(i-1, j);
+                txtfield4=(JTextField)m.obtenerJ(i-1, j+1);
+                //RELACION FILAS
+                
+                if(i==0){
+                dot=dot+txtfield.getText()+i+j+"->"+txtfield2.getText()+i+(j+1)+"; \n";
+                dot=dot+txtfield2.getText()+i+(j+1)+"->"+txtfield.getText()+i+j+"; \n";
+                }else{
+                //RELACION COLUMNAS
+                
+                dot=dot+txtfield.getText()+i+j+"->"+txtfield2.getText()+i+(j+1)+"; \n";
+                dot=dot+txtfield2.getText()+i+(j+1)+"->"+txtfield.getText()+i+j+"; \n";
+                
+                //RELACION ARRIBA ABAJO
+                dot=dot+txtfield.getText()+i+j+"->"+txtfield3.getText()+(i-1)+j+"; \n";
+                dot=dot+txtfield3.getText()+(i-1)+j+"->"+txtfield.getText()+i+j+"; \n";
+                
+                //dot=dot+txtfield2.getText()+"->"+txtfield4.getText()+"; \n";
+                //dot=dot+txtfield4.getText()+"->"+txtfield2.getText()+"; \n";
+                
+                }
+                
+            }
+
+        }
+                    
+            
+            PrintWriter write=null;
+        try {
+            dot=dot+"}";
+            String rutaArchivo="C:\\graphviz-2.38\\release\\EDD\\matriz.dot";
+            write = new PrintWriter(rutaArchivo);
+            write.print(dot);
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Juego.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            write.close();
+        }
+            ejecutar("matriz","matriz");
+
+          ImageIcon iconoMatriz= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\matriz.png");
+          Icon icMatriz= new ImageIcon(iconoMatriz.getImage());
+          
+            tableroMatriz.setIcon(icMatriz);
+            
+        
+        System.out.println(dot);
+    }
+
+    public void imagenfichasAc(String nombreJug,String contenido){
         PrintWriter write=null;
         try {
             String rutaArchivo="C:\\graphviz-2.38\\release\\EDD\\"+nombreJug+".dot";
@@ -354,11 +519,63 @@ public class Juego extends javax.swing.JFrame {
             write.close();
         }
             ejecutar(nombreJug, nombreJug);
-          ImageIcon iconoJ= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\"+nombreJug+".png");
+            
+          ImageIcon iconoJ; 
+                  iconoJ= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\"+nombreJug+".png");
           Icon icj= new ImageIcon(iconoJ.getImage());
-            JugadoresLista.setIcon(icj);
+            fichasActivas.setIcon(icj);
+    }
+    public void imagenJugadores(){
+        
+        String jugDot="digraph grafo{\n";
+        int aux=0;
+        while(aux<jugfichas.getSize()){
+            jugDot=jugDot+jugfichas.getDato(aux)+"->"+jugfichas.getDato(aux+1)+"; \n";
+            aux++;
+        }
+        jugDot=jugDot+"}";
+        
+        PrintWriter write=null;
+        try {
+            String rutaArchivo="C:\\graphviz-2.38\\release\\EDD\\circular.dot";
+            write = new PrintWriter(rutaArchivo);
+            write.print(jugDot);
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Juego.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            write.close();
+        }
+        
+            ejecutar("circular", "circular");
+          ImageIcon iconoCirc; 
+                  iconoCirc= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\circular.png");
+          Icon iconCirc= new ImageIcon(iconoCirc.getImage());
+            JugadoresLista.setIcon(iconCirc);
     }
     
+    public void imagenCola(){
+        cola.getSize();
+        PrintWriter write=null;
+        try {
+            String rutaArchivo="C:\\graphviz-2.38\\release\\EDD\\cola.dot";
+            write = new PrintWriter(rutaArchivo);
+            write.print(cola.getArchivoDot());
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Juego.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            write.close();
+        }
+            ejecutar("cola", "cola");
+            
+          ImageIcon iconoCola;
+          iconoCola= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\cola.png");
+          Icon iconC= new ImageIcon(iconoCola.getImage());
+            fichasCola.setIcon(iconC);
+    }
+    
+
     public void imagenDiccionario(){
         
         
@@ -378,11 +595,18 @@ public class Juego extends javax.swing.JFrame {
             write.close();
         }
             ejecutar("diccionario", "diccionario");
-          ImageIcon icono= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\diccionario.png");
+          
+          ImageIcon icono; 
+          icono= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\diccionario.png");
           Icon ic= new ImageIcon(icono.getImage());
             diccionarioLista.setIcon(ic);
+        try {
+            diccionarioHTML.setPage(getClass().getResource("reporteDiccionario.html"));
+        } catch (IOException ex) {
+            Logger.getLogger(Juego.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
+       
     public void ejecutar(String entrada, String salida){
         
         try {
@@ -404,7 +628,9 @@ public class Juego extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel JugadoresLista;
+    private javax.swing.JTextPane diccionarioHTML;
     private javax.swing.JLabel diccionarioLista;
+    private javax.swing.JLabel fichasActivas;
     private javax.swing.JLabel fichasCola;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -418,6 +644,7 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;

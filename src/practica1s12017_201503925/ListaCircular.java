@@ -49,24 +49,18 @@ public class ListaCircular {
     public Object getDato(int index){
             int contador=0; 
         NodoCircular temporal = first;
-        if(index-1>0){
-            while(contador<index-1){
-                if(temporal.getNext()!=null){          
-                temporal=temporal.getNext();                
-                }contador++;             
-            }
+            while(contador < index && temporal.getNext()!=null){
+                temporal=temporal.getNext();
+                contador++;
             }
         return temporal.getDato();
         }
      public ListaSimple getListaSimpe(int index){
-            int contador=0; 
+        int contador=0; 
         NodoCircular temporal = first;
-        if(index-1>0){
-            while(contador<index-1){
-                if(temporal.getNext()!=null){          
-                temporal=temporal.getNext();                
-                }contador++;             
-            }
+            while(contador < index && temporal.getNext()!=null){
+                temporal=temporal.getNext();
+                contador++;
             }
         return temporal.getLista();
         }
