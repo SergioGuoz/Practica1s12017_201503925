@@ -5,24 +5,33 @@
  */
 package practica1s12017_201503925;
 
+import java.awt.Desktop;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 /**
  *
  * @author Sergio
  */
-public class Juego extends javax.swing.JFrame {
+public class Juego extends javax.swing.JFrame implements Runnable{
 
     /**
      * Creates new form Juego
@@ -36,6 +45,8 @@ public class Juego extends javax.swing.JFrame {
     Cola cola= new Cola();
     Matriz m= new Matriz();
     int global=0;
+    ListaSimple punteo=new ListaSimple();
+    Thread h= new Thread();
     
     public Juego(ListaCircular jugfichas,int matriz,ListaSimple diccionario,
             ListaSimple posx,ListaSimple posy,ListaSimple val, Cola cola) {
@@ -90,8 +101,6 @@ public class Juego extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         nuevaPalabra = new javax.swing.JTextField();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        diccionarioLista = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         JugadoresLista = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -100,17 +109,23 @@ public class Juego extends javax.swing.JFrame {
         tableroMatriz = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
         fichasActivas = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        diccionarioLista = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
         diccionarioHTML = new javax.swing.JTextPane();
         jLabel3 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        score = new javax.swing.JTextArea();
+        jButton5 = new javax.swing.JButton();
 
         listaDiccionario.setText("Lista Diccionario");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextField1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField1.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField1.setDragEnabled(true);
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
@@ -119,27 +134,27 @@ public class Juego extends javax.swing.JFrame {
             }
         });
 
-        jTextField2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField2.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField2.setDragEnabled(true);
 
-        jTextField3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField3.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField3.setDragEnabled(true);
 
-        jTextField4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField4.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField4.setDragEnabled(true);
 
-        jTextField5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField5.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jTextField5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField5.setDragEnabled(true);
 
-        jTextField6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField6.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jTextField6.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField6.setDragEnabled(true);
 
-        jTextField7.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField7.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jTextField7.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField7.setDragEnabled(true);
 
@@ -149,7 +164,7 @@ public class Juego extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 551, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,10 +187,6 @@ public class Juego extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setText("Nueva Palabra");
 
-        jScrollPane1.setViewportView(diccionarioLista);
-
-        jTabbedPane1.addTab("Lista Diccionario", jScrollPane1);
-
         jScrollPane2.setViewportView(JugadoresLista);
 
         jTabbedPane1.addTab("Lista Jugadores", jScrollPane2);
@@ -191,6 +202,10 @@ public class Juego extends javax.swing.JFrame {
         jScrollPane5.setViewportView(fichasActivas);
 
         jTabbedPane1.addTab("Lista Fichas Activas", jScrollPane5);
+
+        jScrollPane1.setViewportView(diccionarioLista);
+
+        jTabbedPane1.addTab("Lista Diccionario", jScrollPane1);
 
         jScrollPane6.setViewportView(diccionarioHTML);
 
@@ -214,6 +229,24 @@ public class Juego extends javax.swing.JFrame {
             }
         });
 
+        jButton4.setText("Reportes");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        score.setColumns(20);
+        score.setRows(5);
+        jScrollPane8.setViewportView(score);
+
+        jButton5.setText("Finalizar");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -221,21 +254,6 @@ public class Juego extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(name, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(nuevaPalabra, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(5, 5, 5)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jButton3)
-                                .addGap(11, 11, 11))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -255,17 +273,37 @@ public class Juego extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 275, Short.MAX_VALUE)))
+                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jButton5)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jButton4)
+                                    .addGap(9, 9, 9))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(21, 21, 21)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(nuevaPalabra, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jButton3))
+                                    .addGap(65, 65, 65)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel1)
+                                        .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(123, 123, 123)
-                        .addComponent(jLabel3)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGap(193, 193, 193)
+                        .addComponent(jLabel3))
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -286,7 +324,9 @@ public class Juego extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton1)
-                            .addComponent(jButton2))
+                            .addComponent(jButton2)
+                            .addComponent(jButton4)
+                            .addComponent(jButton5))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -296,7 +336,9 @@ public class Juego extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(name)
-                                .addGap(229, 229, 229)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(nuevaPalabra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -310,9 +352,9 @@ public class Juego extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
+        timerTask.run();
         crearTablero();
         name.setText(jugfichas.getDato(global)+"");
         jTextField1.setText(jugfichas.getListaSimpe(global).Obtener(0)+"");
@@ -323,6 +365,14 @@ public class Juego extends javax.swing.JFrame {
         jTextField6.setText(jugfichas.getListaSimpe(global).Obtener(5)+"");
         jTextField7.setText(jugfichas.getListaSimpe(global).Obtener(6)+"");
         
+        for (int i = 0; i < jugfichas.getSize(); i++) {
+            punteo.insertarFinal(0);
+        }
+        String aux="";
+        for (int i = 0; i < jugfichas.getSize(); i++) {
+            aux=aux+jugfichas.getDato(i)+" "+punteo.Obtener(i)+"\n";
+        }
+        score.setText(aux);
         //imagenDiccionario();
         //jugfichas.getListaSimpe(global).imprimir();
         //imagenfichasAc(jugfichas.getDato(global)+"",jugfichas.getListaSimpe(global).getArchivoDot());
@@ -338,18 +388,54 @@ public class Juego extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        
+        if(cola.getFirst()!=null){
         //Acepta la Palabra
+        
         palabraAceptada();
         //Crea Archivo Dot de la Matriz
         m.archivoDot();
         //Juego
+        
         Jugar();
+        
+        String aux="";
+        for (int i = 0; i < jugfichas.getSize(); i++) {
+            aux=aux+jugfichas.getDato(i)+" "+punteo.Obtener(i)+"\n";
+        }
+        System.out.println(aux);
+        score.setText(aux);
+        
+        }else{
+        JOptionPane.showMessageDialog(null, "El Juego ha finalizado \n"+"Punteo Ganador: "+buscarGanador());
+           
+        }
         
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    public int buscarGanador(){
+        int mayor=0;
+        for (int i = 0; i < punteo.getSize(); i++) {
+            if(Integer.parseInt(punteo.Obtener(i)+"")>mayor){
+                mayor=Integer.parseInt(punteo.Obtener(i)+"");
+            }
+        }
+        return mayor;
+    }
+    public int indicePalabra(int glo){
+        String a= jugfichas.getDato(glo)+"";
+        int indice=0;
+        for (int i = 0; i < jugfichas.getSize(); i++) {
+            if(jugfichas.getDato(i).equals(a)){
+                indice=i;
+            }
+        }
+        return indice;
+    }
+    
     public void palabraAceptada(){
         String fila="",columna="";
-        JTextField aux;
+        JTextField aux; boolean error=false;
         //PALABRA HORIZONTAL
         for (int i = 0; i < matriz; i++) {
             for (int j = 0; j < matriz; j++) {
@@ -360,66 +446,161 @@ public class Juego extends javax.swing.JFrame {
                     for (int k = 0; k < diccionario.getSize(); k++) {
                         if(diccionario.Obtener(k).toString().equalsIgnoreCase(fila)){
                             JOptionPane.showMessageDialog(null, "Palabra Coincide con diccionario");
+                            int auxPunteo=Integer.parseInt(punteo.Obtener(indicePalabra(global))+"")+ obtenerPunteo(fila);
+
+                            punteo.cambiar(indicePalabra(global), auxPunteo);
                             fila="";
+                            error=true;
+                                if((jTextField1.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(0, cola.extraer());
+                                }if((jTextField2.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(1, cola.extraer());
+                                }if((jTextField3.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(2, cola.extraer());
+                                }if((jTextField4.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(3, cola.extraer());
+                                }if((jTextField5.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(4, cola.extraer());
+                                }if((jTextField6.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(5, cola.extraer());
+                                }if((jTextField7.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(6, cola.extraer());
+                                }
                         }
                     }
                 }
                 
-                }
-                
-            }
+                }fila=""; 
+            }if(error==false){
+                JOptionPane.showMessageDialog(null, "Palabra Incorrecta");
+              }error=false;
         //PALABRA VERTICAL
         for (int i = 0; i < matriz; i++) {
             for (int j = 0; j < matriz; j++) {
                 aux=(JTextField)m.obtenerJ(j, i);
                 columna=columna+aux.getText();
+                columna=columna.replace(" ", "");
                 if(matriz==j-1){
                     for (int k = 0; k < diccionario.getSize(); k++) {
-                        if(diccionario.Obtener(k).toString().equalsIgnoreCase(fila)){
-                            //JOptionPane.showMessageDialog(null, "Palabra Coincide con diccionario");
-                            
+                        if(diccionario.Obtener(k).toString().equalsIgnoreCase(columna)){
+                            JOptionPane.showMessageDialog(null, "Palabra Coincide con diccionario");
+                            //OBTENER PUNTEO
+                            int auxPunteo=Integer.parseInt(punteo.Obtener(indicePalabra(global))+"")+ obtenerPunteo(columna);
+                            punteo.cambiar(indicePalabra(global),auxPunteo);
+                            columna="";
+                        error=true;
+                        if((jTextField1.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(0, cola.extraer());
+                                }if((jTextField2.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(1, cola.extraer());
+                                }if((jTextField3.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(2, cola.extraer());
+                                }if((jTextField4.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(3, cola.extraer());
+                                }if((jTextField5.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(4, cola.extraer());
+                                }if((jTextField6.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(5, cola.extraer());
+                                }if((jTextField7.getText().replace(" ", "")).isEmpty()){
+                                    jugfichas.getListaSimpe(global).cambiar(6, cola.extraer());
+                                }
+                        }else if(k==diccionario.getSize()-1&&error==false){
+                            JOptionPane.showMessageDialog(null, "Palabra Incorrecta");
                         }
                     }
                 }
                 
-                }
+                }columna="";
                 
-            }        
-        
-        
-        if(jTextField1.getText().isEmpty()){
-            
-        }if(jTextField2.getText().isEmpty()){
-            
-        }if(jTextField3.getText().isEmpty()){
-            
-        }if(jTextField4.getText().isEmpty()){
-            
-        }if(jTextField5.getText().isEmpty()){
-            
-        }if(jTextField6.getText().isEmpty()){
-            
-        }if(jTextField7.getText().isEmpty()){
-            
+            }
+        String aux2="";
+        for (int i = 0; i < jugfichas.getSize(); i++) {
+            aux2=aux2+jugfichas.getDato(i)+" "+punteo.Obtener(i)+"\n";
         }
-        
-        
+        System.out.println(aux2);
+        score.setText(aux2);        
         
         
     
     }
+    
+    public int obtenerPunteo(String cadena){
+        int nota=0;
+        
+        for (int i = 0; i < cadena.length(); i++) {
+            char c=cadena.charAt(i);
+            switch (c) {
+                case 'A':
+                case 'E':
+                case 'O':
+                case 'I':
+                case 'S':
+                case 'N':
+                case 'L':
+                case 'R':
+                case 'U':
+                case 'T':
+                    nota=nota+1;
+                    break;
+                case 'D':
+                case 'G':        
+                    nota=nota+2;
+                    break;
+                case 'C':
+                case 'B':
+                case 'M':
+                case 'P':
+                    nota=nota+3;
+                    break;
+                case 'H':
+                case 'F':
+                case 'V':
+                case 'Y':
+                    nota=nota+4;
+                    break;
+                case 'Q':
+                    nota=nota+5;
+                    break;
+                case 'J':
+                case 'Ñ':
+                case 'X':
+                    nota=nota+8;
+                    break;
+                case 'Z':
+                    nota=nota+10;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        return nota;
+    }
+    
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         
         diccionario.insertarFinal(nuevaPalabra.getText()+"");
         diccionario.imprimir();
+        imagenDiccionario();
         try {
             diccionarioHTML.setPage(getClass().getResource("\\reporteDiccionario.html"));
         } catch (IOException ex) {
             Logger.getLogger(Juego.class.getName()).log(Level.SEVERE, null, ex);
         }
-        imagenDiccionario();
+        
         
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        lanzarNavegador("reporte.html");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        Inicio inicio= new Inicio();
+        inicio.setVisible(true);
+        inicio.setLocationRelativeTo(null);
+        this.dispose();
+    }//GEN-LAST:event_jButton5ActionPerformed
     public void Jugar(){
         
         global++;
@@ -438,6 +619,7 @@ public class Juego extends javax.swing.JFrame {
         imagenDiccionario();
         jugfichas.getListaSimpe(global).imprimir();
         imagenfichasAc(jugfichas.getDato(global)+"",jugfichas.getListaSimpe(global).getArchivoDot());
+        Reportes(jugfichas.getDato(global)+"");
         imagenJugadores();
         imagenCola();
         archivoMatriz();
@@ -496,14 +678,11 @@ public class Juego extends javax.swing.JFrame {
             write.close();
         }
             ejecutar("matriz","matriz");
-
-          ImageIcon iconoMatriz= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\matriz.png");
-          Icon icMatriz= new ImageIcon(iconoMatriz.getImage());
           
-            tableroMatriz.setIcon(icMatriz);
-            
-        
-        System.out.println(dot);
+            ImageIcon iconoMatriz= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\matriz.png");
+          Icon icMatriz= new ImageIcon(iconoMatriz.getImage());
+         tableroMatriz.setIcon(icMatriz);
+          System.out.println(dot);
     }
 
     public void imagenfichasAc(String nombreJug,String contenido){
@@ -520,10 +699,22 @@ public class Juego extends javax.swing.JFrame {
         }
             ejecutar(nombreJug, nombreJug);
             
-          ImageIcon iconoJ; 
-                  iconoJ= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\"+nombreJug+".png");
+            PrintWriter writer=null;
+        try {
+            String rutaArchivo="C:\\graphviz-2.38\\release\\EDD\\actual.dot";
+            writer = new PrintWriter(rutaArchivo);
+            writer.print(contenido);
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Juego.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            writer.close();
+        }
+            ejecutar("actual", "actual");
+            
+          ImageIcon iconoJ= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\"+nombreJug+".png");
           Icon icj= new ImageIcon(iconoJ.getImage());
-            fichasActivas.setIcon(icj);
+           fichasActivas.setIcon(icj);
     }
     public void imagenJugadores(){
         
@@ -596,10 +787,21 @@ public class Juego extends javax.swing.JFrame {
         }
             ejecutar("diccionario", "diccionario");
           
+       //   JLabel mat= new JLabel();
+       //   JScrollPane aux= new JScrollPane(); 
+          
+            
           ImageIcon icono; 
           icono= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\diccionario.png");
           Icon ic= new ImageIcon(icono.getImage());
             diccionarioLista.setIcon(ic);
+            diccionarioLista.repaint();
+            
+      //      mat.setIcon(ic);
+      
+      //      aux.add(mat);
+      //      jTabbedPane1.addTab("Diccionario", aux);
+            
         try {
             diccionarioHTML.setPage(getClass().getResource("reporteDiccionario.html"));
         } catch (IOException ex) {
@@ -626,6 +828,129 @@ public class Juego extends javax.swing.JFrame {
         
     }
 
+    public void Reportes(String jugador) 
+        {
+            try {
+            
+            String archivoSalida = "reporte.html";
+            
+            FileWriter fichero= new FileWriter(archivoSalida);
+        try (PrintWriter print = new PrintWriter(fichero)) {
+            print.println("<!DOCTYPE html>");
+            print.println("<html>");
+            print.println("<head>");
+            print.println("<title>Estructuras de Datos </title>");
+            print.println("<meta charset=\"utf-8\"/>");
+            print.println("<link rel=\"stylesheet\" type\"text/css\" href=\"estiloss.css\">");
+            print.println("</head>");
+            print.println("<body>");
+            print.println("	<header>");
+            print.println("<h1> REPORTES</h1>");
+            print.println("</header>");
+            print.println("<section>");
+            print.println("<article>");
+            print.println("<h2>EDD</h2>");
+            print.println("<h3></h3>");
+            print.println("</article>");
+            print.println("<article>");
+            print.println("<div id=\"texto\"> ");
+            print.println("<table>");
+            print.println("<tr style=\"color:red; font-weight: bold;\"><td>REPORTE</td><td>-</td></tr>");
+            
+            //
+            print.println("<tr><td>MATRIZ</td><td>****REPORTE***</td><td></tr>");
+            print.println("<tr><td colspan=\"2\"> <img src=\"C:\\graphviz-2.38\\release\\EDD\\matriz.png \"</td><tr>");
+            
+            print.println("<tr><td>JUGADORES</td><td>****REPORTE***</td><td></tr>");
+            print.println("<tr><td colspan=\"2\"> <img src=\"C:\\graphviz-2.38\\release\\EDD\\circular.png \"</td><tr>");
+            
+            print.println("<tr><td>DICCIONARIO</td><td>****REPORTE***</td><td></tr>");
+            print.println("<tr><td colspan=\"2\"> <img src=\"C:\\graphviz-2.38\\release\\EDD\\diccionario.png \"</td><tr>");
+            
+            print.println("<tr><td>COLA</td><td>****REPORTE***</td><td></tr>");
+            print.println("<tr><td colspan=\"2\"> <img src=\"C:\\graphviz-2.38\\release\\EDD\\cola.png \"</td><tr>");
+            
+            print.println("<tr><td>Fichas Jugador: "+jugador+"</td><td>****REPORTE***</td><td></tr>");
+            print.println("<tr><td colspan=\"2\"> <img src=\"C:\\graphviz-2.38\\release\\EDD\\"+jugador+".png \"</td><tr>");
+            
+            print.println("</table>");
+            print.println("</div>");
+            print.println("</article>");
+            print.println("</section>");
+            print.println("</body>");
+            print.println("</html>");
+        }
+
+            String estilo = "estiloss.css";
+            
+            FileWriter fichero2= new FileWriter(estilo);
+        try (PrintWriter archivoCSS = new PrintWriter(fichero2)) {
+            archivoCSS.println("*{ margin: 0px 0px 0px 0px; }" +
+                    "body{"
+                    + "}"
+                    + "header{"
+                    + "height:140px; width:1095px;"
+                    + "text-align:center;"
+                    + "margin-left: 220px;"
+                    + "color:white;"
+                    + "padding-top:20px;"
+                    + "}"
+                    + "header h1{"
+                    + "margin:0px 0px 0px 0px;"
+                    + "background-color:black;"
+                    + "width:500px; "
+                    + "text-align:center;"
+                    + "opacity:0.7;"
+                    + "}"
+                    + "section{"
+                    + "background-color:black;"
+                    + "width:775px;"
+                    + "margin-left: 220px;"
+                    + "float: left;"
+                    + "opacity:0.7;"
+                    + "}"
+                    + "article{"
+                    + "color:white;"
+                    + "text-align:left;"
+                    + "text-align:justify;"
+                    + "margin-left:50px;"
+                    + "margin-right: 50px;"
+                    + "}"
+                    + "article div{"
+                    + "text-align: center;"
+                    + "}"
+                    + "h2{"
+                    + "color:yellow;"
+                    + "}"
+                    + "table {"
+                    + "border:1px solid black;"
+                    + "border-collapse:separate;"
+                    + "border-spacing:5px;"
+                    + "width:530px;"
+                    + "height:auto;"
+                    + "}"); }
+
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Ha ocurrido un error");
+            }
+        
+        }
+    
+    private static void lanzarNavegador(String html) {
+	       Desktop desktop = null;
+	if (Desktop.isDesktopSupported()) {
+		desktop = Desktop.getDesktop();
+		if (desktop.isSupported(Desktop.Action.BROWSE)) {
+			try {
+				File f = new File(html);
+				desktop.browse(f.toURI());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+		}
+	}
+}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel JugadoresLista;
     private javax.swing.JTextPane diccionarioHTML;
@@ -635,6 +960,8 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -645,6 +972,7 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
@@ -656,6 +984,48 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JLabel listaDiccionario;
     private javax.swing.JLabel name;
     private javax.swing.JTextField nuevaPalabra;
+    private javax.swing.JTextArea score;
     private javax.swing.JLabel tableroMatriz;
     // End of variables declaration//GEN-END:variables
+
+    TimerTask timerTask= new TimerTask() {
+            @Override
+            public void run() {
+                ImageIcon icono; 
+          icono= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\diccionario.png");
+          Icon ic= new ImageIcon(icono.getImage());
+            diccionarioLista.setIcon(ic);
+        ImageIcon iconoCola;
+          iconoCola= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\cola.png");
+          Icon iconC= new ImageIcon(iconoCola.getImage());
+            fichasCola.setIcon(iconC);
+        ImageIcon iconoCirc; 
+                  iconoCirc= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\circular.png");
+          Icon iconCirc= new ImageIcon(iconoCirc.getImage());
+            JugadoresLista.setIcon(iconCirc);
+        ImageIcon iconoJ= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\actual.png");
+          Icon icj= new ImageIcon(iconoJ.getImage());
+           fichasActivas.setIcon(icj);
+                
+            }
+        };
+    
+    @Override
+    public void run() {
+        ImageIcon icono; 
+          icono= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\diccionario.png");
+          Icon ic= new ImageIcon(icono.getImage());
+            diccionarioLista.setIcon(ic);
+        ImageIcon iconoCola;
+          iconoCola= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\cola.png");
+          Icon iconC= new ImageIcon(iconoCola.getImage());
+            fichasCola.setIcon(iconC);
+        ImageIcon iconoCirc; 
+                  iconoCirc= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\circular.png");
+          Icon iconCirc= new ImageIcon(iconoCirc.getImage());
+            JugadoresLista.setIcon(iconCirc);
+        ImageIcon iconoJ= new ImageIcon("C:\\graphviz-2.38\\release\\EDD\\actual.png");
+          Icon icj= new ImageIcon(iconoJ.getImage());
+           fichasActivas.setIcon(icj);
+    }
 }

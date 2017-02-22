@@ -19,12 +19,22 @@ public class Cola {
         }
     }
     public Object getFirst(){
-        return first.getDato();
+        if(first!=null){
+            return first.getDato();
+        }else{
+            return null;
+        }
+        
     }
 
     public Object extraer(){
-        Object dato= first.getDato();
+        Object dato;
+        if(first!=null){
+        dato= first.getDato();
         first=first.getNext();
+        }else{
+        dato=null;
+        }
         return dato; 
     }
     

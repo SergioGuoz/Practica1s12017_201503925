@@ -84,5 +84,14 @@ public class ListaSimple {
         return temporal.getDato();
         }
         
-        
+    
+    public void cambiar(int posicion, Object dato){
+    int contador=0; Nodo temporal= first;
+    
+        while(contador<posicion){
+            temporal=temporal.getNext();
+            contador++;
+        }
+        temporal.setDato(dato);
+    }   
 }
