@@ -15,7 +15,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 /**
  *
- * @author Sergio
+ * @author EDItADO
  */
 public class Inicio extends javax.swing.JFrame {
 
